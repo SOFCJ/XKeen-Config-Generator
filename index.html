@@ -59,6 +59,24 @@
             border: 1px solid rgba(0, 0, 0, 0.08);
         }
 
+        /* Кнопка смены языка в ЛЕВОМ верхнем углу */
+        #lang-toggle {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            padding: 10px 18px;
+            font-size: 14px;
+        }
+
+        /* Кнопка смены темы в ПРАВОМ верхнем углу */
+        #theme-toggle {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            padding: 10px 18px;
+            font-size: 14px;
+        }
+
         /* Блок заголовка */
         .header-container {
             text-align: center;
@@ -159,7 +177,7 @@
             transform: translateY(-2px);
         }
 
-        /* Главная кнопка генерации на своей строке */
+        /* Главная кнопка генерации */
         button.btn-generate {
             background: #0ea5e9;
             color: white;
@@ -169,7 +187,7 @@
             background: #0284c7;
         }
 
-        /* Второстепенные одинаковые кнопки ниже */
+        /* Второстепенные кнопки */
         .dark-theme button.btn-secondary {
             background: #2d3a4f;
             color: white;
@@ -184,15 +202,6 @@
         }
         .light-theme button.btn-secondary:hover {
             background: #cbd5e1;
-        }
-
-        /* Фиксированная кнопка смены темы в углу */
-        #theme-toggle {
-            position: absolute;
-            top: 40px;
-            right: 40px;
-            padding: 10px 18px;
-            font-size: 14px;
         }
 
         #warnings {
@@ -245,6 +254,12 @@
                 padding: 24px;
                 margin: 10px auto;
             }
+            #lang-toggle {
+                position: static;
+                margin-bottom: 12px;
+                width: 100%;
+                text-align: center;
+            }
             #theme-toggle {
                 position: static;
                 margin-bottom: 24px;
@@ -264,36 +279,101 @@
 <body class="dark-theme">
 
     <div class="container">   
+        <button id="lang-toggle" class="btn-secondary" onclick="toggleLang()">🌐 Language: RU</button>
         <button id="theme-toggle" class="btn-secondary" onclick="toggleTheme()">🌓 Сменить тему</button>
+
         <div class="header-container">
             <h1>🚀 XKeen Config Generator</h1>
             <div class="author-credits">by SOFCJ</div>
         </div>
         
         <div class="form-group">
-            <label for="url">Введите ссылку (VLESS / VMESS / Trojan / SS):</label>
+            <label id="lbl-url" for="url">Введите ссылку (VLESS / VMESS / Trojan / SS):</label>
             <input type="text" id="url" placeholder="vless://... или vmess://...">
         </div>
 
         <div class="actions-wrapper">
-            <button class="btn-generate" onclick="generateConfig()">Сгенерировать конфиг</button>
+            <button id="btn-generate" class="btn-generate" onclick="generateConfig()">Сгенерировать конфиг</button>
             
             <div class="secondary-actions">
-                <button class="btn-secondary" onclick="saveConfig()">Сохранить в файл</button>
-                <button class="btn-secondary" onclick="copyToClipboard(this)">Скопировать</button>
+                <button id="btn-save" class="btn-secondary" onclick="saveConfig()">Сохранить в файл</button>
+                <button id="btn-copy" class="btn-secondary" onclick="copyToClipboard(this)">Скопировать JSON</button>
             </div>
         </div>
 
         <div id="warnings"></div>
 
         <div class="output-container">
-            <label>Результат:</label>
+            <label id="lbl-result">Результат:</label>
             <pre id="output">// Здесь появится готовый JSON...</pre>
         </div>
     </div>
 
     <script>
         let config = {};
+        let currentLang = 'ru';
+
+        // База локализации текстов интерфейса
+        const i18n = {
+            ru: {
+                themeBtn: "🌓 Сменить тему",
+                urlLabel: "Введите ссылку (VLESS / VMESS / Trojan / SS):",
+                urlPlaceholder: "vless://... или vmess://...",
+                genBtn: "Сгенерировать конфиг",
+                saveBtn: "Сохранить в файл",
+                copyBtn: "Скопировать JSON",
+                resultLabel: "Результат:",
+                emptyOutput: "// Здесь появится готовый JSON...",
+                errVmess: "⚠️ Ошибка разбора vmess ссылки.",
+                errPort: "⚠️ Рекомендуется использовать порт 443 для повышенной маскировки.",
+                errProtocol: "⚠️ Протокол не поддерживается.",
+                errFormat: "⚠️ Неверный формат ссылки.",
+                alertGenerate: "Сначала сгенерируйте конфигурацию!",
+                copied: "✅ Скопировано!"
+            },
+            en: {
+                themeBtn: "🌓 Toggle Theme",
+                urlLabel: "Enter link (VLESS / VMESS / Trojan / SS):",
+                urlPlaceholder: "vless://... or vmess://...",
+                genBtn: "Generate Config",
+                saveBtn: "Save to File",
+                copyBtn: "Copy JSON",
+                resultLabel: "Result:",
+                emptyOutput: "// Ready JSON will appear here...",
+                errVmess: "⚠️ Error parsing VMess link.",
+                errPort: "⚠️ Using port 443 is highly recommended for better masquerading.",
+                errProtocol: "⚠️ Protocol not supported.",
+                errFormat: "⚠️ Invalid link format.",
+                alertGenerate: "Please generate a configuration first!",
+                copied: "✅ Copied!"
+            }
+        };
+
+        function updateInterfaceLanguage() {
+            document.getElementById('lang-toggle').innerText = `🌐 Language: ${currentLang.toUpperCase()}`;
+            document.getElementById('theme-toggle').innerText = i18n[currentLang].themeBtn;
+            document.getElementById('lbl-url').innerText = i18n[currentLang].urlLabel;
+            document.getElementById('url').placeholder = i18n[currentLang].urlPlaceholder;
+            document.getElementById('btn-generate').innerText = i18n[currentLang].genBtn;
+            document.getElementById('btn-save').innerText = i18n[currentLang].saveBtn;
+            document.getElementById('btn-copy').innerText = i18n[currentLang].copyBtn;
+            document.getElementById('lbl-result').innerText = i18n[currentLang].resultLabel;
+            
+            const outputEl = document.getElementById('output');
+            if (outputEl.textContent.startsWith("//")) {
+                outputEl.textContent = i18n[currentLang].emptyOutput;
+            }
+        }
+
+        function toggleLang() {
+            currentLang = currentLang === 'ru' ? 'en' : 'ru';
+            localStorage.setItem('lang', currentLang);
+            updateInterfaceLanguage();
+            
+            if (document.getElementById('url').value.trim() !== "") {
+                generateConfig();
+            }
+        }
 
         function generateConfig() {
             const url = document.getElementById('url').value.trim();
@@ -305,7 +385,6 @@
                 try {
                     const decodedPayload = atob(base64Payload);
                     const vmessConfig = JSON.parse(decodedPayload);
-                    console.log("Decoded VMess Config:", vmessConfig);
 
                     config = {
                         "outbounds": [
@@ -378,8 +457,7 @@
                     document.getElementById('warnings').innerHTML = "";
                     document.getElementById('output').textContent = JSON.stringify(config, null, 4);
                 } catch (e) {
-                    console.error("Error parsing VMess link:", e);
-                    document.getElementById('warnings').innerHTML = "⚠️ Ошибка разбора vmess ссылки.";
+                    document.getElementById('warnings').innerHTML = i18n[currentLang].errVmess;
                     document.getElementById('output').textContent = "";
                 }
             } else if (match) {
@@ -393,7 +471,7 @@
 
                 let warnings = [];
                 if (port !== 443 && protocol !== "ss") {
-                    warnings.push("⚠️ Рекомендуется использовать порт 443.");
+                    warnings.push(i18n[currentLang].errPort);
                 }
 
                 document.getElementById('warnings').innerHTML = warnings.join("<br>");
@@ -514,18 +592,18 @@
                     };
                     document.getElementById('output').textContent = JSON.stringify(config, null, 4);
                 } else {
-                    document.getElementById('warnings').innerText = "⚠️ Протокол не поддерживается.";
+                    document.getElementById('warnings').innerText = i18n[currentLang].errProtocol;
                     document.getElementById('output').textContent = "";
                 }
             } else {
-                document.getElementById('warnings').innerText = "⚠️ Неверный формат ссылки.";
+                document.getElementById('warnings').innerText = i18n[currentLang].errFormat;
                 document.getElementById('output').textContent = "";
             }
         }
 
         function saveConfig() {
             if (!config.outbounds) {
-                alert("Сначала сгенерируйте конфигурацию!");
+                alert(i18n[currentLang].alertGenerate);
                 return;
             }
             const blob = new Blob([JSON.stringify(config, null, 4)], { type: 'application/json' });
@@ -539,13 +617,13 @@
             const outputText = document.getElementById('output').textContent;
             
             if (!config.outbounds || outputText.startsWith("//")) {
-                alert("Сначала сгенерируйте конфигурацию!");
+                alert(i18n[currentLang].alertGenerate);
                 return;
             }
 
             navigator.clipboard.writeText(outputText).then(() => {
                 const originalText = button.innerHTML;
-                button.innerHTML = "✅ Скопировано!";
+                button.innerHTML = i18n[currentLang].copied;
                 button.style.opacity = "0.8";
                 
                 setTimeout(() => {
@@ -553,7 +631,7 @@
                     button.style.opacity = "1";
                 }, 2000);
             }).catch(err => {
-                console.error('Не удалось скопировать: ', err);
+                console.error('Error: ', err);
             });
         }
 
@@ -567,6 +645,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme') || 'dark-theme';
             document.body.classList.add(savedTheme);
+
+            currentLang = localStorage.getItem('lang') || 'ru';
+            updateInterfaceLanguage();
         });
     </script>
 </body>

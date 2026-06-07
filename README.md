@@ -57,7 +57,8 @@ A fast, private, and responsive web-based configuration generator for XKeen/V2Ra
 * 🌓 **Dual Themes:** Full support for both Dark and Light modes, saving your preference automatically via `localStorage`.
 * 🛠️ **Smart Warnings:** Built-in validation checks (e.g., advising port 443 usage for enhanced stealth and masquerading).
 * 📋 **Convenient Export:** Copy the generated JSON to your clipboard with a single click or download it directly as a correctly named `04_outbounds.json` file.
-
+* 🌐 **Dual language support** (RU/EN) with automatic settings saving.
+  
 ## 📡 Supported Protocols
 
 * **VLESS** (including Reality / TCP / gRPC / WS)

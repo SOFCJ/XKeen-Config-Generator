@@ -1,4 +1,4 @@
-# 🚀 XKeen Config Generator
+# 🚀 SOFCJ XKeen Config Generator ✗
 
 [![GitHub pages](https://img.shields.io/badge/GitHub%20Pages-Active-success?style=flat-square&logo=github)](https://sofcj.github.io/XKeen-Config-Generator/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)

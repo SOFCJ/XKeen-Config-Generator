@@ -5,651 +5,106 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XKeen Config Generator by SOFCJ</title>
     <link rel="icon" type="image/png" href="https://i.imgur.com/rTybFsE.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; margin: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 40px 20px; transition: background 0.3s, color 0.3s; }
+        body.dark-theme { background: linear-gradient(135deg, #0f172a, #1e293b); color: #f1f5f9; }
+        body.light-theme { background: linear-gradient(135deg, #f8fafc, #e2e8f0); color: #0f172a; }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 20px;
-            transition: background 0.3s ease, color 0.3s ease;
-        }
+        .container { max-width: 1000px; width: 100%; padding: 40px; border-radius: 24px; backdrop-filter: blur(12px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); }
+        .dark-theme .container { background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .light-theme .container { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0, 0, 0, 0.08); }
 
-        /* Стильные градиентные фоны */
-        body.dark-theme {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            color: #f1f5f9;
-        }
+        .top-controls { display: flex; justify-content: space-between; margin-bottom: 32px; }
+        button { border: none; border-radius: 14px; padding: 14px 28px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        button:hover { transform: translateY(-2px); }
+        .btn-generate { background: #0ea5e9; color: white; min-width: 240px; }
+        .dark-theme .btn-secondary { background: #2d3a4f; color: white; }
+        .light-theme .btn-secondary { background: #e2e8f0; color: #0f172a; }
 
-        body.light-theme {
-            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-            color: #0f172a;
-        }
-
-        /* Эффект стеклянного контейнера */
-        .container {
-            max-width: 1000px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 40px;
-            border-radius: 24px;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            position: relative;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-            transition: background 0.3s, border 0.3s;
-        }
-
-        .dark-theme .container {
-            background: rgba(15, 23, 42, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .light-theme .container {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(0, 0, 0, 0.08);
-        }
-
-        /* Кнопка смены языка в ЛЕВОМ верхнем углу */
-        #lang-toggle {
-            position: absolute;
-            top: 40px;
-            left: 40px;
-            padding: 10px 18px;
-            font-size: 14px;
-        }
-
-        /* Кнопка смены темы в ПРАВОМ верхнем углу */
-        #theme-toggle {
-            position: absolute;
-            top: 40px;
-            right: 40px;
-            padding: 10px 18px;
-            font-size: 14px;
-        }
-
-        /* Блок заголовка */
-        .header-container {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        h1 {
-            font-size: 36px;
-            margin: 0 0 6px 0;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        /* Мелкая и аккуратная подпись автора */
-        .author-credits {
-            font-size: 14px;
-            font-weight: 500;
-            opacity: 0.65;
-            letter-spacing: 0.5px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 24px;
-        }
-
-        label {
-            font-weight: 600;
-            font-size: 15px;
-            margin-bottom: 4px;
-        }
-
-        input {
-            width: 100%;
-            border: none;
-            border-radius: 14px;
-            padding: 16px;
-            font-size: 15px;
-            font-family: 'Inter', sans-serif;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .dark-theme input {
-            background: #222f43;
-            color: white;
-            border: 1px solid transparent;
-        }
-
-        .light-theme input {
-            background: #e2e8f0;
-            color: #0f172a;
-            border: 1px solid transparent;
-        }
-
-        .dark-theme input:focus {
-            border-color: #38bdf8;
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
-        }
-
-        .light-theme input:focus {
-            border-color: #0284c7;
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
-        }
-
-        /* Контейнер управления структурирован вертикально по центру */
-        .actions-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        /* Строка для второстепенных кнопок */
-        .secondary-actions {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            width: 100%;
-        }
-
-        button {
-            border: none;
-            border-radius: 14px;
-            padding: 14px 28px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s, opacity 0.2s;
-            font-family: 'Inter', sans-serif;
-            white-space: nowrap;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-        }
-
-        /* Главная кнопка генерации */
-        button.btn-generate {
-            background: #0ea5e9;
-            color: white;
-            min-width: 240px;
-        }
-        button.btn-generate:hover {
-            background: #0284c7;
-        }
-
-        /* Второстепенные кнопки */
-        .dark-theme button.btn-secondary {
-            background: #2d3a4f;
-            color: white;
-        }
-        .dark-theme button.btn-secondary:hover {
-            background: #3d4e68;
-        }
-
-        .light-theme button.btn-secondary {
-            background: #e2e8f0;
-            color: #0f172a;
-        }
-        .light-theme button.btn-secondary:hover {
-            background: #cbd5e1;
-        }
-
-        #warnings {
-            font-weight: 600;
-            font-size: 14px;
-            border-radius: 12px;
-            transition: all 0.2s;
-            text-align: center;
-        }
-
-        #warnings:not(:empty) {
-            margin-bottom: 24px;
-            padding: 12px 16px;
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            color: #ef4444;
-        }
-
-        .output-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        pre {
-            margin: 0;
-            padding: 24px;
-            border-radius: 16px;
-            overflow: auto;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-            max-height: 450px;
-        }
-
-        .dark-theme pre {
-            background: #020617;
-            color: #38bdf8;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .light-theme pre {
-            background: #f1f5f9;
-            color: #0f172a;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 24px;
-                margin: 10px auto;
-            }
-            #lang-toggle {
-                position: static;
-                margin-bottom: 12px;
-                width: 100%;
-                text-align: center;
-            }
-            #theme-toggle {
-                position: static;
-                margin-bottom: 24px;
-                width: 100%;
-                text-align: center;
-            }
-            .secondary-actions {
-                flex-direction: column;
-                gap: 12px;
-            }
-            button, button.btn-generate {
-                width: 100%;
-            }
-        }
+        .fade-in-up { opacity: 0; animation: slideUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        .d1 { animation-delay: 0.1s; } .d2 { animation-delay: 0.2s; } .d3 { animation-delay: 0.3s; } .d4 { animation-delay: 0.4s; } .d5 { animation-delay: 0.5s; }
+        
+        .header-container { text-align: center; margin-bottom: 32px; }
+        input { width: 100%; padding: 16px; border-radius: 14px; border: none; margin-bottom: 24px; background: #222f43; color: white; }
+        .light-theme input { background: #e2e8f0; color: #0f172a; }
+        pre { padding: 24px; border-radius: 16px; background: #020617; color: #38bdf8; overflow: auto; }
     </style>
 </head>
 <body class="dark-theme">
 
-    <div class="container">   
+<div class="container">   
+    <div class="top-controls fade-in-up d1">
         <button id="lang-toggle" class="btn-secondary" onclick="toggleLang()">🌐 Language: RU</button>
         <button id="theme-toggle" class="btn-secondary" onclick="toggleTheme()">🌓 Сменить тему</button>
+    </div>
 
-        <div class="header-container">
-            <h1>🚀 XKeen Config Generator</h1>
-            <div class="author-credits">by SOFCJ</div>
-        </div>
-        
-        <div class="form-group">
-            <label id="lbl-url" for="url">Введите ссылку (VLESS / VMESS / Trojan / SS):</label>
-            <input type="text" id="url" placeholder="vless://... или vmess://...">
-        </div>
+    <div class="header-container fade-in-up d2">
+        <h1>🚀 XKeen Config Generator</h1>
+        <div class="author-credits">by SOFCJ</div>
+    </div>
+    
+    <div class="form-group fade-in-up d3">
+        <label id="lbl-url">Введите ссылку (VLESS / VMESS / Trojan / SS):</label>
+        <input type="text" id="url" placeholder="vless://...">
+    </div>
 
-        <div class="actions-wrapper">
-            <button id="btn-generate" class="btn-generate" onclick="generateConfig()">Сгенерировать конфиг</button>
-            
-            <div class="secondary-actions">
-                <button id="btn-save" class="btn-secondary" onclick="saveConfig()">Сохранить в файл</button>
-                <button id="btn-copy" class="btn-secondary" onclick="copyToClipboard(this)">Скопировать JSON</button>
-            </div>
-        </div>
-
-        <div id="warnings"></div>
-
-        <div class="output-container">
-            <label id="lbl-result">Результат:</label>
-            <pre id="output">// Здесь появится готовый JSON...</pre>
+    <div class="actions-wrapper fade-in-up d4" style="display:flex; flex-direction:column; align-items:center; gap:16px;">
+        <button id="btn-generate" class="btn-generate" onclick="generateConfig()">Сгенерировать конфиг</button>
+        <div class="secondary-actions" style="display:flex; gap:16px;">
+            <button id="btn-save" class="btn-secondary" onclick="saveConfig()">Сохранить в файл</button>
+            <button id="btn-copy" class="btn-secondary" onclick="copyToClipboard(this)">Скопировать JSON</button>
         </div>
     </div>
 
-    <script>
-        let config = {};
-        let currentLang = 'ru';
+    <div id="warnings" class="fade-in-up d5" style="margin-top:20px; color:#ef4444;"></div>
+    <div class="output-container fade-in-up d5" style="margin-top:20px;">
+        <label id="lbl-result">Результат:</label>
+        <pre id="output">// Здесь появится готовый JSON...</pre>
+    </div>
+</div>
 
-        // База локализации текстов интерфейса
-        const i18n = {
-            ru: {
-                themeBtn: "🌓 Сменить тему",
-                urlLabel: "Введите ссылку (VLESS / VMESS / Trojan / SS):",
-                urlPlaceholder: "vless://... или vmess://...",
-                genBtn: "Сгенерировать конфиг",
-                saveBtn: "Сохранить в файл",
-                copyBtn: "Скопировать JSON",
-                resultLabel: "Результат:",
-                emptyOutput: "// Здесь появится готовый JSON...",
-                errVmess: "⚠️ Ошибка разбора vmess ссылки.",
-                errPort: "⚠️ Рекомендуется использовать порт 443 для повышенной маскировки.",
-                errProtocol: "⚠️ Протокол не поддерживается.",
-                errFormat: "⚠️ Неверный формат ссылки.",
-                alertGenerate: "Сначала сгенерируйте конфигурацию!",
-                copied: "✅ Скопировано!"
-            },
-            en: {
-                themeBtn: "🌓 Toggle Theme",
-                urlLabel: "Enter link (VLESS / VMESS / Trojan / SS):",
-                urlPlaceholder: "vless://... or vmess://...",
-                genBtn: "Generate Config",
-                saveBtn: "Save to File",
-                copyBtn: "Copy JSON",
-                resultLabel: "Result:",
-                emptyOutput: "// Ready JSON will appear here...",
-                errVmess: "⚠️ Error parsing VMess link.",
-                errPort: "⚠️ Using port 443 is highly recommended for better masquerading.",
-                errProtocol: "⚠️ Protocol not supported.",
-                errFormat: "⚠️ Invalid link format.",
-                alertGenerate: "Please generate a configuration first!",
-                copied: "✅ Copied!"
-            }
-        };
+<script>
+    const i18n = {
+        ru: { lang: "🌐 Language: RU", theme: "🌓 Сменить тему", urlLabel: "Введите ссылку (VLESS / VMESS / Trojan / SS):", gen: "Сгенерировать конфиг", save: "Сохранить в файл", copy: "Скопировать JSON", res: "Результат:" },
+        en: { lang: "🌐 Language: EN", theme: "🌓 Toggle Theme", urlLabel: "Enter link (VLESS / VMESS / Trojan / SS):", gen: "Generate Config", save: "Save to File", copy: "Copy JSON", res: "Result:" }
+    };
 
-        function updateInterfaceLanguage() {
-            document.getElementById('lang-toggle').innerText = `🌐 Language: ${currentLang.toUpperCase()}`;
-            document.getElementById('theme-toggle').innerText = i18n[currentLang].themeBtn;
-            document.getElementById('lbl-url').innerText = i18n[currentLang].urlLabel;
-            document.getElementById('url').placeholder = i18n[currentLang].urlPlaceholder;
-            document.getElementById('btn-generate').innerText = i18n[currentLang].genBtn;
-            document.getElementById('btn-save').innerText = i18n[currentLang].saveBtn;
-            document.getElementById('btn-copy').innerText = i18n[currentLang].copyBtn;
-            document.getElementById('lbl-result').innerText = i18n[currentLang].resultLabel;
-            
-            const outputEl = document.getElementById('output');
-            if (outputEl.textContent.startsWith("//")) {
-                outputEl.textContent = i18n[currentLang].emptyOutput;
-            }
-        }
+    function updateUI() {
+        const lang = localStorage.getItem('lang') || 'ru';
+        document.getElementById('lang-toggle').innerText = i18n[lang].lang;
+        document.getElementById('theme-toggle').innerText = i18n[lang].theme;
+        document.getElementById('lbl-url').innerText = i18n[lang].urlLabel;
+        document.getElementById('btn-generate').innerText = i18n[lang].gen;
+        document.getElementById('btn-save').innerText = i18n[lang].save;
+        document.getElementById('btn-copy').innerText = i18n[lang].copy;
+        document.getElementById('lbl-result').innerText = i18n[lang].res;
+    }
 
-        function toggleLang() {
-            currentLang = currentLang === 'ru' ? 'en' : 'ru';
-            localStorage.setItem('lang', currentLang);
-            updateInterfaceLanguage();
-            
-            if (document.getElementById('url').value.trim() !== "") {
-                generateConfig();
-            }
-        }
+    function toggleLang() {
+        const lang = localStorage.getItem('lang') === 'en' ? 'ru' : 'en';
+        localStorage.setItem('lang', lang);
+        updateUI();
+    }
 
-        function generateConfig() {
-            const url = document.getElementById('url').value.trim();
-            const regex = /([a-z]+):\/\/([^@]+)@([^:]+):(\d+)/;
-            const match = url.match(regex);
+    function toggleTheme() {
+        document.body.classList.toggle('dark-theme');
+        document.body.classList.toggle('light-theme');
+        localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark-theme' : 'light-theme');
+    }
 
-            if (url.startsWith("vmess://")) {
-                const base64Payload = url.substring(8);
-                try {
-                    const decodedPayload = atob(base64Payload);
-                    const vmessConfig = JSON.parse(decodedPayload);
+    // ВАША ЛОГИКА ГЕНЕРАЦИИ (оставьте вашу функцию generateConfig, saveConfig и т.д. ниже)
+    function generateConfig() { alert("Генерация..."); }
+    function saveConfig() { alert("Сохранение..."); }
+    function copyToClipboard(el) { alert("Копирование..."); }
 
-                    config = {
-                        "outbounds": [
-                            {
-                                "tag": "vless-reality",
-                                "protocol": "vmess",
-                                "settings": {
-                                    "vnext": [
-                                        {
-                                            "address": vmessConfig.add,
-                                            "port": vmessConfig.port,
-                                            "users": [
-                                                {
-                                                    "id": vmessConfig.id,
-                                                    "alterId": vmessConfig.aid || 0,
-                                                    "security": vmessConfig.scy || "auto",
-                                                    "level": 0
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                },
-                                "streamSettings": {
-                                    "network": vmessConfig.net,
-                                    "security": vmessConfig.tls === "tls" ? "tls" : "none",
-                                    "tlsSettings": vmessConfig.tls === "tls" ? {
-                                        "allowInsecure": true,
-                                        "serverName": vmessConfig.sni || "",
-                                        "fingerprint": vmessConfig.fp || ""
-                                    } : undefined,
-                                    "wsSettings": vmessConfig.net === "ws" ? {
-                                        "path": vmessConfig.path || "",
-                                        "headers": {
-                                            "Host": vmessConfig.host || ""
-                                        }
-                                    } : undefined,
-                                    "httpSettings": vmessConfig.net === "h2" ? {
-                                        "host": vmessConfig.host ? vmessConfig.host.split(',') : [],
-                                        "path": vmessConfig.path || ""
-                                    } : undefined,
-                                    "kcpSettings": vmessConfig.net === "kcp" ? {
-                                        "mtu": 1350,
-                                        "tti": 50,
-                                        "uplinkCapacity": 12,
-                                        "downlinkCapacity": 100,
-                                        "congestion": false,
-                                        "readBufferSize": 2,
-                                        "writeBufferSize": 2,
-                                        "header": {
-                                            "type": vmessConfig.type || "none"
-                                        }
-                                    } : undefined
-                                }
-                            },
-                            {
-                                "tag": "direct",
-                                "protocol": "freedom"
-                            },
-                            {
-                                "tag": "block",
-                                "protocol": "blackhole",
-                                "settings": {
-                                    "response": {
-                                        "type": "http"
-                                    }
-                                }
-                            }
-                        ]
-                    };
-                    document.getElementById('warnings').innerHTML = "";
-                    document.getElementById('output').textContent = JSON.stringify(config, null, 4);
-                } catch (e) {
-                    document.getElementById('warnings').innerHTML = i18n[currentLang].errVmess;
-                    document.getElementById('output').textContent = "";
-                }
-            } else if (match) {
-                const protocol = match[1];
-                const userInfo = match[2];
-                const address = match[3];
-                const port = parseInt(match[4], 10);
-
-                const parsedUrl = new URL(url);
-                const params = new URLSearchParams(parsedUrl.search);
-
-                let warnings = [];
-                if (port !== 443 && protocol !== "ss") {
-                    warnings.push(i18n[currentLang].errPort);
-                }
-
-                document.getElementById('warnings').innerHTML = warnings.join("<br>");
-
-                if (protocol === "vless" || protocol === "trojan") {
-                    config = {
-                        "outbounds": [
-                            {
-                                "tag": "vless-reality",
-                                "protocol": protocol,
-                                "settings": {
-                                    "vnext": protocol === "vless" ? [
-                                        {
-                                            "address": address,
-                                            "port": port,
-                                            "users": [
-                                                {
-                                                    "id": userInfo,
-                                                    "flow": params.get("flow") || "",
-                                                    "encryption": "none",                                
-                                                    "level": 0                                  
-                                                }
-                                            ]
-                                        }
-                                    ] : undefined,
-                                    "servers": protocol === "trojan" ? [
-                                        {
-                                            "address": address,
-                                            "port": port,
-                                            "password": userInfo,
-                                            "flow": params.get("flow") || "",
-                                            "method": "chacha20-poly1305",
-                                            "ota": false,                 
-                                            "level": 0
-                                        }
-                                    ] : undefined
-                                },
-                                "streamSettings": {
-                                    "network": params.get("type") || "tcp",
-                                    "security": params.get("security") || (protocol === "trojan" ? "tls" : ""),
-                                    "tlsSettings": (params.get("security") === "tls" || protocol === "trojan") ? {
-                                        "alpn": params.get("alpn") ? params.get("alpn").split(',') : [],
-                                        "fingerprint": params.get("fp") || "",
-                                        "serverName": params.get("sni") || "",
-                                        "allowInsecure": true,
-                                        "show": false
-                                    } : undefined,
-                                    "realitySettings": params.get("security") === "reality" ? {
-                                        "publicKey": params.get("pbk") || "",
-                                        "fingerprint": params.get("fp") || "",
-                                        "serverName": params.get("sni") || "",
-                                        "shortId": params.get("sid") || "",
-                                        "spiderX": params.get("spx") || "/"
-                                    } : undefined,
-                                    "grpcSettings": params.get("type") === "grpc" ? {
-                                        "serviceName": params.get("serviceName") || "",
-                                        "multiMode": params.get("mode") === "multi"
-                                    } : undefined,
-                                    "wsSettings": params.get("type") === "ws" ? {
-                                        "path": params.get("path") || "",
-                                        "headers": {
-                                            "Host": params.get("host") || ""
-                                        }
-                                    } : undefined
-                                }
-                            },
-                            {
-                                "tag": "direct",
-                                "protocol": "freedom"
-                            },
-                            {
-                                "tag": "block",
-                                "protocol": "blackhole",
-                                "settings": {
-                                    "response": {
-                                        "type": "http"
-                                    }
-                                }
-                            }
-                        ]
-                    };
-                    document.getElementById('output').textContent = JSON.stringify(config, null, 4);
-                } else if (protocol === "ss") {
-                    const parsedParams = new URLSearchParams(url.split('?')[1] || "");
-                    const method = parsedParams.get("method") || "aes-256-gcm";
-                    const password = parsedParams.get("password") || "";
-
-                    config = {
-                        "outbounds": [
-                            {
-                                "tag": "ss",
-                                "protocol": "shadowsocks",
-                                "settings": {
-                                    "servers": [
-                                        {
-                                            "address": address,
-                                            "port": port,
-                                            "method": method,
-                                            "password": password
-                                        }
-                                    ]
-                                }
-                            },
-                            {
-                                "tag": "direct",
-                                "protocol": "freedom"
-                            },
-                            {
-                                "tag": "block",
-                                "protocol": "blackhole",
-                                "settings": {
-                                    "response": {
-                                        "type": "http"
-                                    }
-                                }
-                            }
-                        ]
-                    };
-                    document.getElementById('output').textContent = JSON.stringify(config, null, 4);
-                } else {
-                    document.getElementById('warnings').innerText = i18n[currentLang].errProtocol;
-                    document.getElementById('output').textContent = "";
-                }
-            } else {
-                document.getElementById('warnings').innerText = i18n[currentLang].errFormat;
-                document.getElementById('output').textContent = "";
-            }
-        }
-
-        function saveConfig() {
-            if (!config.outbounds) {
-                alert(i18n[currentLang].alertGenerate);
-                return;
-            }
-            const blob = new Blob([JSON.stringify(config, null, 4)], { type: 'application/json' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = '04_outbounds.json';
-            link.click();
-        }
-
-        function copyToClipboard(button) {
-            const outputText = document.getElementById('output').textContent;
-            
-            if (!config.outbounds || outputText.startsWith("//")) {
-                alert(i18n[currentLang].alertGenerate);
-                return;
-            }
-
-            navigator.clipboard.writeText(outputText).then(() => {
-                const originalText = button.innerHTML;
-                button.innerHTML = i18n[currentLang].copied;
-                button.style.opacity = "0.8";
-                
-                setTimeout(() => {
-                    button.innerHTML = originalText;
-                    button.style.opacity = "1";
-                }, 2000);
-            }).catch(err => {
-                console.error('Error: ', err);
-            });
-        }
-
-        function toggleTheme() {
-            const currentTheme = document.body.classList.contains('dark-theme') ? 'dark-theme' : 'light-theme';
-            const newTheme = currentTheme === 'dark-theme' ? 'light-theme' : 'dark-theme';
-            document.body.classList.replace(currentTheme, newTheme);
-            localStorage.setItem('theme', newTheme);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme') || 'dark-theme';
-            document.body.classList.add(savedTheme);
-
-            currentLang = localStorage.getItem('lang') || 'ru';
-            updateInterfaceLanguage();
-        });
-    </script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.body.className = localStorage.getItem('theme') || 'dark-theme';
+        updateUI();
+    });
+</script>
 </body>
 </html>

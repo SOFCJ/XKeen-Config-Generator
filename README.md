@@ -5,7 +5,9 @@
 
 Быстрый, конфиденциальный и адаптивный веб-генератор конфигурационных файлов **outbounds** для конфигураций XKeen/V2Ray. Преобразует стандартные ссылки подключения в чистый структурированный JSON.
 
-🔥 **[Открыть Генератор Конфигов](https://sofcj.github.io/XKeen-Config-Generator/)**
+<p align="center" style="font-size: 42px; font-weight: 900; margin: 35px 0;">
+  🔥 <strong><a href="https://sofcj.github.io/XKeen-Config-Generator/">Открыть Генератор Конфигов</a></strong> 🔥
+</p>
 
 ---
 

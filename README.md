@@ -22,7 +22,7 @@
 
 ## 📡 Поддерживаемые протоколы
 
-* **VLESS** (включая Reality / TCP / gRPC / WS)
+* **VLESS** (включая Reality / TCP / gRPC / WS / Hysteria2)
 * **VMess** (с поддержкой расшифровки Base64, типов сети kcp, ws, h2)
 * **Trojan** (с поддержкой TLS/Reality)
 * **Shadowsocks (SS)**
@@ -61,7 +61,7 @@ A fast, private, and responsive web-based configuration generator for XKeen/V2Ra
   
 ## 📡 Supported Protocols
 
-* **VLESS** (including Reality / TCP / gRPC / WS)
+* **VLESS** (including Reality / TCP / gRPC / WS / Hysteria2)
 * **VMess** (with Base64 payload decoding, supporting kcp, ws, h2 network types)
 * **Trojan** (with TLS / Reality support)
 * **Shadowsocks (SS)**

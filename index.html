@@ -546,12 +546,15 @@
             return config;
         }
 
-        // Вырезаем хэш-тег из конца строки, чтобы он не ломал регулярные выражения параметров
+        // Извлекаем хэш-тег (имя сервера из конца ссылки)
         let hashTag = "";
         const hashIndex = rawUrl.indexOf('#');
         if (hashIndex !== -1) {
             hashTag = decodeURIComponent(rawUrl.substring(hashIndex + 1));
             rawUrl = rawUrl.substring(0, hashIndex);
+            
+            // Регулярное выражение для очистки от флагов стран (Regional Indicator Symbols) и лишних пробелов в начале
+            hashTag = hashTag.replace(/[\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF]/g, "").trim();
         }
 
         const regex = /([a-z0-9]+):\/\/([^@]+)@([^:\/?]+):(\d+)/i;

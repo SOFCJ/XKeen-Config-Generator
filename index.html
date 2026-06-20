@@ -40,7 +40,6 @@
         .container {
             max-width: 860px;
             width: 100%;
-            margin: 0 xauto;
             margin: 0 auto;
             padding: 44px 40px 52px;
             border-radius: 48px;
@@ -86,7 +85,7 @@
 
         h1 {
             font-size: 38px;
-            margin: 0 0 8px 0;
+            margin: 0 0 6px 0;
             font-weight: 700;
             letter-spacing: -0.8px;
             background: linear-gradient(135deg, #e0f2fe, #7aa2f7);
@@ -104,10 +103,19 @@
         }
 
         .author-credits {
-            font-size: 15px;
-            font-weight: 500;
-            opacity: 0.7;
-            letter-spacing: 0.4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: color 0.3s ease;
+        }
+
+        .dark-theme .author-credits {
+            color: #64748b;
+        }
+
+        .light-theme .author-credits {
+            color: #475569;
         }
 
         .form-group {
@@ -373,7 +381,7 @@
 <div class="container">
     <div class="header-container">
         <h1>XKeen Config Generator</h1>
-        <div class="author-credits">by SOFCJ</div>
+        <div class="author-credits">Developed by SOFCJ</div>
     </div>
 
     <div class="form-group">
@@ -546,14 +554,11 @@
             return config;
         }
 
-        // Извлекаем хэш-тег (имя сервера из конца ссылки)
         let hashTag = "";
         const hashIndex = rawUrl.indexOf('#');
         if (hashIndex !== -1) {
             hashTag = decodeURIComponent(rawUrl.substring(hashIndex + 1));
             rawUrl = rawUrl.substring(0, hashIndex);
-            
-            // Регулярное выражение для очистки от флагов стран (Regional Indicator Symbols) и лишних пробелов в начале
             hashTag = hashTag.replace(/[\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF]/g, "").trim();
         }
 
@@ -566,7 +571,6 @@
             const address = match[3];
             const port = parseInt(match[4], 10);
             
-            // Парсим параметры query-строки безопасным путем
             let params = new URLSearchParams();
             const queryIndex = rawUrl.indexOf('?');
             if (queryIndex !== -1) {
